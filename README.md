@@ -19,29 +19,46 @@ Main changes on initial commit:
 
 ## Installation
 
-Using bioio library gives a more uniform input/output framework however it uses an old version of numpy which is not compatible with the cude-compatible pytorch, including problems of conda-pip compatibility. I get around this by first installing cpu version of pytorch with mamba, then use pip to install bioio, and then the gpu version of pytorch.
+Using bioio library gives a more uniform input/output framework however it uses an old version of numpy which is tricky to keep compatible with other packages.
 
 To be able to install the gpu version, need to ssh into izbdelhi and find the current version of cuda using
 ```
-nvcc --version
+nvidia-smi
 ```
-Currently this is version 11.8. Then go to https://pytorch.org/get-started/locally/ where you can find the command lines to use.
+Currently I get version 12.7 
+
+Then go to https://pytorch.org/get-started/locally/ where you can find the command lines to use.
+-----------------
 
 The following is the set of commands to use to install environment
 
 ```
-mamba create -n lhcellpose python=3.10
+mamba create -n lhcellpose python=3.11
 
 mamba activate lhcellpose
 
+mamba install cuda -c nvidia
+#mamba install nvidia/label/cuda-12.4.1::cuda-nvcc -c nvidia
 mamba install pytorch=2.5.1 -c pytorch
 mamba install -c conda-forge 'cellpose[gui]'
 
 mamba install -c conda-forge napari pyqt matplotlib-scalebar edt trackpy nd2reader seaborn scyjava
 
 pip install bioio bioio-nd2 bioio-tifffile
-pip install torch --index-url https://download.pytorch.org/whl/cu118
+
 ```
+
+You can confirm the version of nvcc is >12.1 wtih
+```
+nvcc --version
+```
+
+And check the numpy version is 1.26.4 (older or newer versions seemed to give an error) with
+```
+mamba list
+```
+
+
 
 ## Running scripts
 
@@ -51,10 +68,10 @@ ssh to izblisbon then start a remote job:
 
 ```
 # for gpu job
-alloc --gres=gpu:1 --mem=16GB --time=9:00:00 --ntasks=2
+salloc --gres=gpu:1 --mem=16GB --time=9:00:00 --ntasks=2
 
 # for cpu job
-alloc --mem=16GB --time=9:00:00 --ntasks=2
+salloc --mem=16GB --time=9:00:00 --ntasks=2
 ```
 
 Then start remote vscode
