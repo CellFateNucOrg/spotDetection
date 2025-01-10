@@ -22,42 +22,54 @@ Main changes on initial commit:
 Using bioio library gives a more uniform input/output framework however it uses an old version of numpy which is tricky to keep compatible with other packages.
 
 To be able to install the gpu version, need to ssh into izbdelhi and find the current version of cuda using
+
 ```
 nvidia-smi
 ```
 Currently I get version 12.7 
 
 Then go to https://pytorch.org/get-started/locally/ where you can find the command lines to use.
------------------
 
-The following is the set of commands to use to install environment
+Check if you see a cuda runtime package
 
 ```
-mamba create -n lhcellpose python=3.11
+nvcc --version
+which nvcc
+```
+This can interfere with pytorch installation which automatically installs its own version of cuda runtime.
+You might need to remove the path from the $PATH variable during installation. then it should work fine.
+
+-----------------
+
+The following is the set of commands to use to install environment:
+
+```
+mamba create -n lhcellpose python=3.10
 
 mamba activate lhcellpose
 
-mamba install cuda -c nvidia
-#mamba install nvidia/label/cuda-12.4.1::cuda-nvcc -c nvidia
-mamba install pytorch=2.5.1 -c pytorch
+mamba install pytorch torchvision pytorch-cuda=12.4 -c pytorch -c nvidia
+
 mamba install -c conda-forge 'cellpose[gui]'
 
-mamba install -c conda-forge napari pyqt matplotlib-scalebar edt trackpy nd2reader seaborn scyjava
+mamba install -c conda-forge napari pyqt matplotlib-scalebar edt trackpy seaborn
 
 pip install bioio bioio-nd2 bioio-tifffile
 
 ```
 
-You can confirm the version of nvcc is >12.1 wtih
-```
-nvcc --version
-```
-
 And check the numpy version is 1.26.4 (older or newer versions seemed to give an error) with
+
 ```
 mamba list
 ```
 
+Test pytorch is working by starting command line python (just type 'python'), then:
+```
+import torch
+torch.cuda.is_available()
+```
+This should give 'true'
 
 
 ## Running scripts
@@ -68,10 +80,10 @@ ssh to izblisbon then start a remote job:
 
 ```
 # for gpu job
-salloc --gres=gpu:1 --mem=16GB --time=9:00:00 --ntasks=2
+salloc --gres=gpu:1 --mem=32GB --time=9:00:00 --ntasks=2
 
 # for cpu job
-salloc --mem=16GB --time=9:00:00 --ntasks=2
+salloc --mem=32GB --time=9:00:00 --ntasks=2
 ```
 
 Then start remote vscode
