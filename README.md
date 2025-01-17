@@ -55,6 +55,7 @@ mamba install -c conda-forge 'cellpose[gui]'
 mamba install -c conda-forge napari pyqt matplotlib-scalebar edt trackpy seaborn
 
 pip install bioio bioio-nd2 bioio-tifffile
+pip install plotly ipywidgets
 
 ```
 
