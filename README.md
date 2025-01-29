@@ -52,7 +52,7 @@ mamba install pytorch torchvision pytorch-cuda=12.4 -c pytorch -c nvidia
 
 mamba install -c conda-forge 'cellpose[gui]'
 
-mamba install -c conda-forge napari pyqt matplotlib-scalebar edt trackpy seaborn
+mamba install -c conda-forge napari pyqt matplotlib-scalebar edt trackpy seaborn numpy=1.26.4
 
 pip install bioio bioio-nd2 bioio-tifffile
 pip install plotly ipywidgets
